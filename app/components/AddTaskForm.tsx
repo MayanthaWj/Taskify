@@ -2,14 +2,14 @@
 
 import { useForm } from 'react-hook-form';
 import { supabase } from '@/lib/supabaseClient';
-import { useRouter } from 'next/navigation';
+import { useTaskContext } from '../contexts/TaskContext';
 
 interface TaskFormInputs {
   title: string;
 }
 
 export default function AddTaskForm() {
-  const router = useRouter();
+  const { addTask } = useTaskContext();
   const {
     register,
     handleSubmit,
@@ -19,7 +19,6 @@ export default function AddTaskForm() {
 
   const onSubmit = async (data: TaskFormInputs) => {
     try {
-      // Get the current user's session
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
       if (sessionError) {
@@ -30,43 +29,50 @@ export default function AddTaskForm() {
         throw new Error('No user session found');
       }
 
-      const { error } = await supabase
+      const { data: newTask, error } = await supabase
         .from('tasks')
         .insert([
           {
             title: data.title,
             completed: false,
-            user_id: session.user.id
+            user_id: session.user.id,
+            created_at: new Date().toISOString() 
           }
-        ]);
+        ])
+        .select('*')
+        .single();
 
       if (error) {
         throw error;
       }
 
-      reset();
-      router.refresh();
+      if (newTask) {
+        addTask(newTask);
+        reset();
+      } else {
+        throw new Error('No task data returned from insert');
+      }
     } catch (error) {
       console.error('Error adding task:', error);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mb-8">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
         <input
           {...register('title', { required: 'Task title is required' })}
           placeholder="Add a new task..."
-          className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full p-4 bg-white/5 border-2 border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/30 transition-all placeholder-gray-400 text-white"
         />
         {errors.title && (
-          <p className="mt-1 text-sm text-red-500">{errors.title.message}</p>
+          <p className="mt-2 text-sm text-red-400 bg-red-900/30 p-2 rounded-lg">{errors.title.message}</p>
         )}
       </div>
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 disabled:bg-blue-300"
+        className="w-full bg-white/10 text-white p-4 rounded-xl hover:bg-white/20 disabled:bg-white/5 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors text-lg font-medium shadow-lg"
       >
         {isSubmitting ? 'Adding...' : 'Add Task'}
       </button>

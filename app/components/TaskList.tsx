@@ -1,120 +1,72 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabaseClient';
-import { useRouter } from 'next/navigation';
-
-interface Task {
-  id: string;
-  title: string;
-  completed: boolean;
-  created_at: string;
-}
+import { useState } from 'react';
+import ConfirmationDialog from './ConfirmationDialog';
+import { useTaskContext } from '../contexts/TaskContext';
 
 export default function TaskList() {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
-
-  useEffect(() => {
-    fetchTasks();
-  }, []);
-
-  const fetchTasks = async () => {
-    try {
-      const { data: tasks, error } = await supabase
-        .from('tasks')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        throw error;
-      }
-
-      if (tasks) {
-        setTasks(tasks);
-      }
-    } catch (error) {
-      console.error('Error fetching tasks:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const toggleTaskComplete = async (taskId: string, currentStatus: boolean) => {
-    try {
-      const { error } = await supabase
-        .from('tasks')
-        .update({ completed: !currentStatus })
-        .eq('id', taskId);
-
-      if (error) {
-        throw error;
-      }
-
-      setTasks(tasks.map(task => 
-        task.id === taskId 
-          ? { ...task, completed: !currentStatus }
-          : task
-      ));
-      router.refresh();
-    } catch (error) {
-      console.error('Error updating task:', error);
-    }
-  };
-
-  const deleteTask = async (taskId: string) => {
-    try {
-      const { error } = await supabase
-        .from('tasks')
-        .delete()
-        .eq('id', taskId);
-
-      if (error) {
-        throw error;
-      }
-
-      setTasks(tasks.filter(task => task.id !== taskId));
-      router.refresh();
-    } catch (error) {
-      console.error('Error deleting task:', error);
-    }
-  };
-
-  if (loading) {
-    return <div className="text-center p-4">Loading tasks...</div>;
-  }
+  const { tasks, deleteTask, toggleTaskComplete } = useTaskContext();
+  const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
 
   return (
-    <div className="space-y-4">
-      {tasks.length === 0 ? (
-        <div className="text-center text-gray-500">No tasks found</div>
-      ) : (
-        tasks.map((task) => (
-          <div
-            key={task.id}
-            className="flex items-center justify-between p-4 bg-white rounded-lg shadow"
-          >
-            <div className="flex items-center space-x-4">
-              <input
-                type="checkbox"
-                checked={task.completed}
-                onChange={() => toggleTaskComplete(task.id, task.completed)}
-                className="h-4 w-4 rounded border-gray-300"
-              />
-              <span className={task.completed ? 'line-through text-gray-500' : ''}>
-                {task.title}
-              </span>
-            </div>
-            <button
-              onClick={() => deleteTask(task.id)}
-              className="text-red-500 hover:text-red-700"
-            >
-              Delete
-            </button>
+    <>
+      <div className="space-y-4">
+        {tasks.length === 0 ? (
+          <div className="text-center p-8 bg-white/10 backdrop-blur-sm rounded-xl text-gray-300">
+            No tasks found. Add your first task on the left!
           </div>
-        ))
-      )}
-    </div>
+        ) : (
+          tasks.map((task) => (
+            <div
+              key={task.id}
+              className="flex items-center justify-between p-4 bg-white/10 backdrop-blur-sm rounded-xl shadow-lg transition-all hover:bg-white/20"
+            >
+              <div className="flex items-center space-x-4 flex-1 min-w-0">
+                <input
+                  type="checkbox"
+                  checked={task.completed}
+                  onChange={() => toggleTaskComplete(task.id, task.completed)}
+                  className="h-5 w-5 rounded-md border-gray-600 bg-white/5 text-emerald-500 focus:ring-emerald-500/50 transition-colors"
+                />
+                <span className={`text-base truncate ${task.completed ? 'line-through text-gray-500' : 'text-white'}`}>
+                  {task.title}
+                </span>
+              </div>
+              <button
+                onClick={() => setTaskToDelete(task.id)}
+                className="ml-4 p-2 text-red-400 hover:text-red-300 hover:bg-red-900/30 rounded-lg transition-colors group"
+                aria-label="Delete task"
+              >
+                <svg 
+                  className="w-5 h-5" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth={2} 
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" 
+                  />
+                </svg>
+              </button>
+            </div>
+          ))
+        )}
+      </div>
+
+      <ConfirmationDialog
+        isOpen={!!taskToDelete}
+        onClose={() => setTaskToDelete(null)}
+        onConfirm={() => {
+          if (taskToDelete) {
+            deleteTask(taskToDelete);
+          }
+        }}
+        title="Delete Task"
+        message="Are you sure you want to delete this task? This action cannot be undone."
+      />
+    </>
   );
 }
