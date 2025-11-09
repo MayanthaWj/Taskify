@@ -1,6 +1,6 @@
 # Taskify - Task Management Application
 
-A modern, intuitive task management application built with Next.js 15, Supabase, and TypeScript. Taskify helps you organize your work with a beautiful Kanban board interface, priority management, and real-time updates.
+A modern, intuitive task management application built with Next.js 16, Supabase, and TypeScript. Taskify helps you organize your work with a beautiful Kanban board interface, priority management, and real-time updates.
 
 ## 🚀 Live Demo
 
@@ -38,7 +38,7 @@ A modern, intuitive task management application built with Next.js 15, Supabase,
 
 ## 🛠️ Tech Stack
 
-- **Framework:** Next.js 15 (App Router)
+- **Framework:** Next.js 16 (App Router)
 - **Language:** TypeScript
 - **Database & Auth:** Supabase
 - **Styling:** Tailwind CSS

@@ -53,9 +53,15 @@ export default function TaskCard({ task, index }: TaskCardProps) {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-3">
                   {/* Drag handle */}
-                  <div {...provided.dragHandleProps} className="cursor-grab active:cursor-grabbing">
+                  <div 
+                    {...provided.dragHandleProps} 
+                    className="cursor-grab active:cursor-grabbing p-1 rounded hover:bg-white/10 transition-colors group relative"
+                    aria-label="Drag to move task"
+                    role="button"
+                    tabIndex={0}
+                  >
                     <svg
-                      className="w-5 h-5 text-gray-400"
+                      className="w-10 h-10 text-gray-400 hover:text-red-400 transition-colors"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -64,9 +70,21 @@ export default function TaskCard({ task, index }: TaskCardProps) {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M9 5v4m0 6v4M15 5v4m0 6v4"
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                       />
                     </svg>
+                              
+                    {/* Tooltip */}
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
+                      Drag to move
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                    </div>
                   </div>
                   <span className={`w-2 h-2 rounded-full ${priorityColors[task.priority ?? 'low'] || 'bg-gray-400'}`} />
                   <h3 className="font-semibold text-white truncate">{task.title}</h3>
