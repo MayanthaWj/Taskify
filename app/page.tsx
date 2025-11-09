@@ -48,7 +48,7 @@ export default function Home() {
               {/* Features Grid */}
               <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4">
                 {[
-                  { icon: '📋', title: 'Smart Task Boards', desc: 'Organize with ease.' },
+                  { icon: '📋', title: 'Smart Task Boards', desc: 'Visualize your personal task and  Projects with an intuitive drag-and-drop boards.' },
                   { icon: '🎯', title: 'Daily Planner', desc: 'Plan your day, prioritize tasks and track what truly matters.' },
                   { icon: '⏰', title: 'Deadline Reminders', desc: 'Get gentle nudges for upcoming tasks-never miss a goal again.' },
                   { icon: '🔄', title: 'Focus Mode', desc: 'Block distractions and complete tasks one step at a time.' },

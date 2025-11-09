@@ -17,7 +17,11 @@ const COLUMNS: {
     title: 'Todo',
     icon: (className) => (
       <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        <path 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            strokeWidth={2} 
+            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
       </svg>
     )
   },
@@ -79,10 +83,15 @@ export default function KanbanBoard() {
         <button
           onClick={() => setIsAddTaskModalOpen(true)}
           aria-label="Add task"
-          className="inline-flex items-center justify-center px-6 py-3 text-base font-medium text-white border border-white/20 rounded-lg hover:bg-white/10 transition duration-200"
+          className="inline-flex items-center justify-center px-6 py-3 text-base font-medium text-white border border-white/20 
+                    rounded-lg hover:bg-white/10 transition duration-200"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden>
-            <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+            <path 
+                fillRule="evenodd" 
+                d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" 
+                clipRule="evenodd" 
+            />
           </svg>
           <span className="font-semibold">Add Task</span>
         </button>
@@ -126,7 +135,7 @@ export default function KanbanBoard() {
                         <TaskCard key={task.id} task={task} index={index} />
                       ))}
                     {tasks.filter(t => (t.status ?? 'todo') === col.key).length === 0 && (
-                      <div className="text-sm text-primary-200/60">No tasks</div>
+                      <div className="text-sm text-white/80">No tasks</div>
                     )}
                     {provided.placeholder}
                   </div>
@@ -149,10 +158,15 @@ export default function KanbanBoard() {
               type="button"
               onClick={() => setIsAddTaskModalOpen(false)}
               aria-label="Close"
-              className="absolute top-3 right-3 inline-flex items-center justify-center p-2 rounded-full bg-white/6 hover:bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="absolute top-3 right-3 inline-flex items-center justify-center p-2 rounded-full bg-white/6 hover:bg-white/10 
+                      text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                <path 
+                  fillRule="evenodd" 
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" 
+                  clipRule="evenodd" 
+                />
               </svg>
             </button>
             <Dialog.Title className="text-lg font-medium text-white mb-4">

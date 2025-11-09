@@ -6,7 +6,6 @@ import { supabase } from '@/lib/supabaseClient';
 interface Task {
   id: string;
   title: string;
-  // New schema fields
   priority?: 'urgent' | 'high' | 'low';
   status?: 'todo' | 'inprogress' | 'onhold' | 'completed';
   due_date?: string | null;
@@ -41,7 +40,6 @@ export function TaskProvider({ children }: { children: ReactNode }) {
           table: 'tasks'
         },
         (payload) => {
-          console.log('Change received!', payload);
           if (payload.eventType === 'INSERT') {
             setTasks(current => [payload.new as Task, ...current]);
           } else if (payload.eventType === 'DELETE') {
@@ -82,7 +80,6 @@ export function TaskProvider({ children }: { children: ReactNode }) {
   };
 
   const addTask = (task: Task) => {
-    // Check if task already exists to prevent duplicates
     setTasks(current => {
       if (current.some(t => t.id === task.id)) {
         return current;
@@ -92,7 +89,6 @@ export function TaskProvider({ children }: { children: ReactNode }) {
   };
 
   const deleteTask = async (taskId: string) => {
-    // Optimistic delete: remove locally first, then persist. Revert on error.
     const previous = tasks;
     setTasks(current => current.filter(t => t.id !== taskId));
 
@@ -103,19 +99,16 @@ export function TaskProvider({ children }: { children: ReactNode }) {
         .eq('id', taskId);
 
       if (error) {
-        // revert local state
         setTasks(previous);
         throw error;
       }
     } catch (error) {
       console.error('Error deleting task:', error);
-      // ensure previous state is restored if something unexpected occurred
       setTasks(previous);
     }
   };
 
   const updateTaskStatus = async (taskId: string, newStatus: Task['status']) => {
-    // Optimistic update: update local state first for immediate UI feedback
     const previous = tasks;
     setTasks(current => current.map(t => t.id === taskId ? { ...t, status: newStatus } : t));
 

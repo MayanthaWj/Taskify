@@ -7,7 +7,7 @@ import { useTaskContext } from '../contexts/TaskContext';
 interface TaskFormInputs {
   title: string;
   priority: 'urgent' | 'high' | 'low';
-  due_date: string; // ISO string
+  due_date: string; 
   status: 'todo' | 'inprogress' | 'onhold' | 'completed';
 }
 
@@ -64,7 +64,8 @@ export default function AddTaskForm({ onDone }: AddTaskFormProps) {
         <input
           {...register('title', { required: 'Task title is required' })}
           placeholder="Task title..."
-          className="w-full p-4 bg-white/5 border-2 border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/30 transition-all placeholder-gray-400 text-white"
+          className="w-full p-4 bg-white/5 border-2 border-white/10 rounded-xl focus:outline-none focus:ring-2 
+                    focus:ring-white/30 focus:border-white/30 transition-all placeholder-gray-400 text-white"
         />
         {errors.title && (
           <p className="mt-2 text-sm text-red-400 bg-red-900/30 p-2 rounded-lg">{errors.title.message}</p>
@@ -75,7 +76,8 @@ export default function AddTaskForm({ onDone }: AddTaskFormProps) {
           <label className="block mb-1 text-white text-sm">Priority</label>
           <select
             {...register('priority', { required: 'Priority is required' })}
-            className="w-full p-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors appearance-none"
+            className="w-full p-3 bg-gray-700 border border-gray-600 rounded-xl
+                       text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors appearance-none"
             defaultValue="low"
           >
             <option value="urgent">Urgent</option>
@@ -83,7 +85,9 @@ export default function AddTaskForm({ onDone }: AddTaskFormProps) {
             <option value="low">Low</option>
           </select>
           {errors.priority && (
-            <p className="mt-2 text-sm text-red-400 bg-red-900/30 p-2 rounded-lg">{errors.priority.message}</p>
+            <p className="mt-2 text-sm text-red-400 bg-red-900/30 p-2 rounded-lg">
+              {errors.priority.message}
+            </p>
           )}
         </div>
         <div className="flex-1">
@@ -101,10 +105,13 @@ export default function AddTaskForm({ onDone }: AddTaskFormProps) {
                 return true;
               }
             })}
-            className="w-full p-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="w-full p-3 bg-gray-700 border border-gray-600 rounded-xl text-white 
+                      focus:outline-none focus:ring-2 focus:ring-primary-500"
           />
           {errors.due_date && (
-            <p className="mt-2 text-sm text-red-400 bg-red-900/30 p-2 rounded-lg">{errors.due_date.message as string}</p>
+            <p className="mt-2 text-sm text-red-400 bg-red-900/30 p-2 rounded-lg">
+              {errors.due_date.message as string}
+            </p>
           )}
         </div>
       </div>
@@ -112,7 +119,8 @@ export default function AddTaskForm({ onDone }: AddTaskFormProps) {
         <label className="block mb-1 text-white text-sm">Status</label>
         <select
           {...register('status', { required: 'Status is required' })}
-          className="w-full p-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+          className="w-full p-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none 
+                      focus:ring-2 focus:ring-primary-500"
           defaultValue="todo"
         >
           <option value="todo">Todo</option>
@@ -127,7 +135,8 @@ export default function AddTaskForm({ onDone }: AddTaskFormProps) {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full bg-white/10 text-white p-4 rounded-xl hover:bg-white/20 disabled:bg-white/5 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors text-lg font-medium shadow-lg"
+        className="w-full bg-white/10 text-white p-4 rounded-xl hover:bg-white/20 disabled:bg-white/5 
+                  disabled:text-gray-500 disabled:cursor-not-allowed transition-colors text-lg font-medium shadow-lg"
       >
         {isSubmitting ? 'Adding...' : 'Add Task'}
       </button>

@@ -71,8 +71,8 @@ export default function TaskCard({ task, index }: TaskCardProps) {
                   <span className={`w-2 h-2 rounded-full ${priorityColors[task.priority ?? 'low'] || 'bg-gray-400'}`} />
                   <h3 className="font-semibold text-white truncate">{task.title}</h3>
                 </div>
-                <div className="mt-2 text-sm text-primary-200 flex items-center justify-between">
-                  <span className="px-2 py-0.5 rounded-full bg-white/5">{task.priority ?? 'low'}</span>
+                <div className="mt-2 text-sm text-white/80 flex items-center justify-between">
+                  <span className="px-2 py-0.5 rounded-full bg-white/5 capitalize text-white/90">{task.priority ?? 'low'}</span>
                   {task.due_date && (
                     <span className="ml-2">Due: {new Date(task.due_date).toLocaleString()}</span>
                   )}
@@ -83,13 +83,16 @@ export default function TaskCard({ task, index }: TaskCardProps) {
                 <select
                   value={task.status ?? 'todo'}
                   onChange={onStatusChange}
-                  className="bg-white/5 text-sm rounded-md p-1 text-white"
+                  className="bg-white/5 text-sm rounded-md p-1 text-white border border-white/10 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  style={{
+                    colorScheme: 'dark'
+                  }}
                   aria-label="Change status"
                 >
-                  <option value="todo">Todo</option>
-                  <option value="inprogress">In Progress</option>
-                  <option value="onhold">On Hold</option>
-                  <option value="completed">Completed</option>
+                  <option value="todo" className="bg-gray-800 text-white">Todo</option>
+                  <option value="inprogress" className="bg-gray-800 text-white">In Progress</option>
+                  <option value="onhold" className="bg-gray-800 text-white">On Hold</option>
+                  <option value="completed" className="bg-gray-800 text-white">Completed</option>
                 </select>
 
                 <button

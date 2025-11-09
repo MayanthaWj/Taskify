@@ -18,7 +18,9 @@ export default function LoginPage() {
           <AuthForm />
         </div>
 
-        <Link href="/" className="text-white flex justify-center text-lg font-semibold hover:underline">← Back to Home</Link>
+        <Link href="/" className="text-white flex justify-center text-lg font-semibold hover:underline">
+          ← Back to Home
+        </Link>
       </div>
     </main>
   );
