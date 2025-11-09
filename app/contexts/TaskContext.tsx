@@ -6,7 +6,10 @@ import { supabase } from '@/lib/supabaseClient';
 interface Task {
   id: string;
   title: string;
-  completed: boolean;
+  // New schema fields
+  priority?: 'urgent' | 'high' | 'low';
+  status?: 'todo' | 'inprogress' | 'onhold' | 'completed';
+  due_date?: string | null;
   created_at: string;
   user_id: string;
 }
@@ -15,7 +18,7 @@ interface TaskContextType {
   tasks: Task[];
   addTask: (task: Task) => void;
   deleteTask: (taskId: string) => Promise<void>;
-  toggleTaskComplete: (taskId: string, currentStatus: boolean) => Promise<void>;
+  updateTaskStatus: (taskId: string, newStatus: Task['status']) => Promise<void>;
 }
 
 const TaskContext = createContext<TaskContextType | null>(null);
@@ -111,28 +114,30 @@ export function TaskProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const toggleTaskComplete = async (taskId: string, currentStatus: boolean) => {
+  const updateTaskStatus = async (taskId: string, newStatus: Task['status']) => {
     // Optimistic update: update local state first for immediate UI feedback
-    setTasks(current => current.map(t => t.id === taskId ? { ...t, completed: !currentStatus } : t));
+    const previous = tasks;
+    setTasks(current => current.map(t => t.id === taskId ? { ...t, status: newStatus } : t));
 
     try {
       const { error } = await supabase
         .from('tasks')
-        .update({ completed: !currentStatus })
+        .update({ status: newStatus })
         .eq('id', taskId);
 
       if (error) {
         // revert optimistic change on error
-        setTasks(current => current.map(t => t.id === taskId ? { ...t, completed: currentStatus } : t));
+        setTasks(previous);
         throw error;
       }
     } catch (error) {
-      console.error('Error updating task:', error);
+      console.error('Error updating task status:', error);
+      setTasks(previous);
     }
   };
 
   return (
-    <TaskContext.Provider value={{ tasks, addTask, deleteTask, toggleTaskComplete }}>
+    <TaskContext.Provider value={{ tasks, addTask, deleteTask, updateTaskStatus }}>
       {children}
     </TaskContext.Provider>
   );

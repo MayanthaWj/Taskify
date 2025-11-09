@@ -6,9 +6,16 @@ import { useTaskContext } from '../contexts/TaskContext';
 
 interface TaskFormInputs {
   title: string;
+  priority: 'urgent' | 'high' | 'low';
+  due_date: string; // ISO string
+  status: 'todo' | 'inprogress' | 'onhold' | 'completed';
 }
 
-export default function AddTaskForm() {
+type AddTaskFormProps = {
+  onDone?: () => void;
+};
+
+export default function AddTaskForm({ onDone }: AddTaskFormProps) {
   const { addTask } = useTaskContext();
   const {
     register,
@@ -20,35 +27,29 @@ export default function AddTaskForm() {
   const onSubmit = async (data: TaskFormInputs) => {
     try {
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
-      if (sessionError) {
-        throw sessionError;
-      }
-
-      if (!session?.user) {
-        throw new Error('No user session found');
-      }
+      if (sessionError) throw sessionError;
+      if (!session?.user) throw new Error('No user session found');
 
       const { data: newTask, error } = await supabase
         .from('tasks')
         .insert([
           {
             title: data.title,
-            completed: false,
+            priority: data.priority,
+            due_date: data.due_date ? new Date(data.due_date).toISOString() : null,
+            status: data.status,
             user_id: session.user.id,
-            created_at: new Date().toISOString() 
+            created_at: new Date().toISOString()
           }
         ])
         .select('*')
         .single();
 
-      if (error) {
-        throw error;
-      }
-
+      if (error) throw error;
       if (newTask) {
         addTask(newTask);
         reset();
+        if (onDone) onDone();
       } else {
         throw new Error('No task data returned from insert');
       }
@@ -62,11 +63,65 @@ export default function AddTaskForm() {
       <div>
         <input
           {...register('title', { required: 'Task title is required' })}
-          placeholder="Add a new task..."
+          placeholder="Task title..."
           className="w-full p-4 bg-white/5 border-2 border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/30 transition-all placeholder-gray-400 text-white"
         />
         {errors.title && (
           <p className="mt-2 text-sm text-red-400 bg-red-900/30 p-2 rounded-lg">{errors.title.message}</p>
+        )}
+      </div>
+      <div className="flex gap-4">
+        <div className="flex-1">
+          <label className="block mb-1 text-white text-sm">Priority</label>
+          <select
+            {...register('priority', { required: 'Priority is required' })}
+            className="w-full p-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors appearance-none"
+            defaultValue="low"
+          >
+            <option value="urgent">Urgent</option>
+            <option value="high">High</option>
+            <option value="low">Low</option>
+          </select>
+          {errors.priority && (
+            <p className="mt-2 text-sm text-red-400 bg-red-900/30 p-2 rounded-lg">{errors.priority.message}</p>
+          )}
+        </div>
+        <div className="flex-1">
+          <label className="block mb-1 text-white text-sm">Due Date</label>
+          <input
+            type="datetime-local"
+            {...register('due_date', {
+              required: 'Due date is required',
+              validate: (value) => {
+                if (!value) return 'Due date is required';
+                const selected = new Date(value);
+                const now = new Date();
+                // Allow small leeway: selected must be >= now (not in the past)
+                if (selected.getTime() < now.getTime()) return 'Due date must be in the future';
+                return true;
+              }
+            })}
+            className="w-full p-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
+          {errors.due_date && (
+            <p className="mt-2 text-sm text-red-400 bg-red-900/30 p-2 rounded-lg">{errors.due_date.message as string}</p>
+          )}
+        </div>
+      </div>
+      <div>
+        <label className="block mb-1 text-white text-sm">Status</label>
+        <select
+          {...register('status', { required: 'Status is required' })}
+          className="w-full p-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+          defaultValue="todo"
+        >
+          <option value="todo">Todo</option>
+          <option value="inprogress">In Progress</option>
+          <option value="onhold">On Hold</option>
+          <option value="completed">Completed</option>
+        </select>
+        {errors.status && (
+          <p className="mt-2 text-sm text-red-400 bg-red-900/30 p-2 rounded-lg">{errors.status.message}</p>
         )}
       </div>
       <button

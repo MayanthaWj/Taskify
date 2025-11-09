@@ -18,10 +18,28 @@ export default function AuthForm() {
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const router = useRouter();
+  
+  // Check URL parameters for initial form state
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const mode = searchParams.get('mode');
+    if (mode === 'signup') {
+      setIsLogin(false);
+    } else if (mode === 'signin') {
+      setIsLogin(true);
+    }
+  }, []);
 
   const password = watch("password");
   const confirmPassword = watch("confirmPassword");
   const passwordsMatch = isLogin || !confirmPassword || password === confirmPassword;
+
+  const toggleMode = () => {
+    setIsLogin(!isLogin);
+    // Update URL without refresh
+    const newMode = !isLogin ? 'signin' : 'signup';
+    window.history.replaceState({}, '', `?mode=${newMode}`);
+  };
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
@@ -37,7 +55,13 @@ export default function AuthForm() {
         if (data.password !== data.confirmPassword) {
           throw new Error("Passwords do not match");
         }
-        const { error } = await supabase.auth.signUp({ email: data.email, password: data.password });
+        const { error } = await supabase.auth.signUp({ 
+          email: data.email, 
+          password: data.password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/login?mode=signin`
+          }
+        });
         if (error) throw error;
         setSuccessMsg("Account created! Please check your email to verify your account.");
       }
@@ -110,16 +134,16 @@ export default function AuthForm() {
         )}
 
         {errorMsg && (
-          <div className="flex items-start gap-3 bg-overflow/0 bg-red-50 border border-red-200 rounded-md p-3">
-            <svg className="w-5 h-5 text-status-overdue mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd"/></svg>
-            <p className="text-sm text-status-overdue">{errorMsg}</p>
+          <div className="flex items-start gap-3 bg-red-500/10 border border-red-500/20 rounded-md p-3">
+            <svg className="w-5 h-5 text-red-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd"/></svg>
+            <p className="text-sm text-red-500">{errorMsg}</p>
           </div>
         )}
 
         {successMsg && (
-          <div className="flex items-start gap-3 bg-secondary-50 border border-secondary-200 rounded-md p-3">
-            <svg className="w-5 h-5 text-secondary-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/></svg>
-            <p className="text-sm text-secondary-800">{successMsg}</p>
+          <div className="flex items-start gap-3 bg-green-500/10 border border-green-500/20 rounded-md p-3">
+            <svg className="w-5 h-5 text-green-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/></svg>
+            <p className="text-sm text-green-500">{successMsg}</p>
           </div>
         )}
 
@@ -139,7 +163,7 @@ export default function AuthForm() {
         </div>
 
         <div className="mt-3 text-center text-sm">
-          <button type="button" onClick={() => setIsLogin(!isLogin)} className="text-primary-200 hover:text-white">
+          <button type="button" onClick={toggleMode} className="text-primary-200 hover:text-white">
             {isLogin ? "Don't have an account? Create one" : 'Already have an account? Sign in'}
           </button>
         </div>
