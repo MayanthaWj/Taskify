@@ -115,11 +115,11 @@ export default function TaskCard({ task, index }: TaskCardProps) {
 
                 <button
                   onClick={handleDeleteClick}
-                  className="mt-2 text-red-400 hover:text-red-300 p-1 rounded transition-colors hover:bg-white/5"
+                  className="mt-6 text-red-400 hover:text-red-300 p-1 rounded transition-colors hover:bg-white/5"
                   aria-label="Delete task"
                 >
                   <svg
-                    className="w-5 h-5"
+                    className="w-8 h-8"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
