@@ -34,7 +34,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="flex items-center justify-between px-6 py-4 bg-black/40 backdrop-blur-sm border-b border-white/10">
+    <nav className="flex items-center justify-between px-6 py-4 bg-black/40 backdrop-blur-sm border-b border-white/10 relative z-50">
       <h1 className="text-2xl font-bold text-white">Taskify</h1>
       
       <div className="relative" ref={dropdownRef}>
@@ -57,7 +57,7 @@ export default function Navbar() {
         </button>
 
         {isDropdownOpen && (
-          <div className="absolute right-0 mt-2 w-48 py-2 bg-black/90 backdrop-blur-sm rounded-xl shadow-lg border border-white/10">
+          <div className="absolute right-0 mt-2 w-48 py-2 bg-black/90 backdrop-blur-sm rounded-xl shadow-lg border border-white/10 z-50">
             <div className="px-4 py-2 border-b border-white/10">
               <p className="text-sm text-gray-400">Signed in as</p>
               <p className="text-sm font-medium text-white truncate">{userEmail}</p>
