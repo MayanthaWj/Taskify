@@ -59,7 +59,7 @@ export default function AuthForm() {
           email: data.email, 
           password: data.password,
           options: {
-            emailRedirectTo: `${window.location.origin}/login?mode=signin`
+            emailRedirectTo: "https://taskify-seven-ashen.vercel.app/login?mode=signin"
           }
         });
         if (error) throw error;
