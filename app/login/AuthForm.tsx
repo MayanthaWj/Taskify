@@ -121,7 +121,7 @@ export default function AuthForm() {
         {!isLogin && (
           <div>
             <label htmlFor="confirmPassword" className="block text-sm font-medium text-primary-100 mb-2">
-              Confirm password
+              Confirm Password
             </label>
             <input
               id="confirmPassword"
@@ -182,7 +182,7 @@ export default function AuthForm() {
         <div className="mt-3 text-center text-sm">
           <div className="mt-4 text-center">
             <p className="text-sm text-primary-200">
-              {isLogin ? "Don't have an Account?" : 'Already have an Account?'}
+              {isLogin ? "Don't have an account?" : 'Already have an account?'}
               {' '}
               <button 
                 type="button" 

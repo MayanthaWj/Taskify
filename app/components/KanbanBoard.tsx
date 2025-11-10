@@ -79,7 +79,7 @@ export default function KanbanBoard() {
   return (
     <div className="h-full flex flex-col gap-4">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-white"> MyTasks</h1>
+        <h1 className="text-2xl font-bold text-white"> My Tasks</h1>
         <button
           onClick={() => setIsAddTaskModalOpen(true)}
           aria-label="Add task"
@@ -100,7 +100,7 @@ export default function KanbanBoard() {
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {COLUMNS.map((col) => (
-            <div key={col.key} className="bg-white/6 rounded-xl overflow-hidden">
+            <div key={col.key} className="bg-white/6 rounded-xl ">
               <div className="flex items-center justify-between p-4 bg-white/5 border-b border-white/10">
                 <div className="flex items-center gap-3">
                   {col.icon(`w-6 h-6 ${
@@ -172,7 +172,10 @@ export default function KanbanBoard() {
             <Dialog.Title className="text-lg font-medium text-white mb-4">
               Add New Task
             </Dialog.Title>
-            <AddTaskForm onDone={() => setIsAddTaskModalOpen(false)} />
+            <AddTaskForm 
+              onDone={() => setIsAddTaskModalOpen(false)} 
+              isEditing={false}
+            />
           </Dialog.Panel>
         </div>
       </Dialog>

@@ -8,6 +8,7 @@ interface Task {
   title: string;
   priority?: 'urgent' | 'high' | 'low';
   status?: 'todo' | 'inprogress' | 'onhold' | 'completed';
+  description?: string;
   due_date?: string | null;
   created_at: string;
   user_id: string;
@@ -18,6 +19,7 @@ interface TaskContextType {
   addTask: (task: Task) => void;
   deleteTask: (taskId: string) => Promise<void>;
   updateTaskStatus: (taskId: string, newStatus: Task['status']) => Promise<void>;
+  updateTask: (task: Task) => void;
 }
 
 const TaskContext = createContext<TaskContextType | null>(null);
@@ -88,6 +90,12 @@ export function TaskProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const updateTask = (updatedTask: Task) => {
+    setTasks(current => current.map(task => 
+      task.id === updatedTask.id ? updatedTask : task
+    ));
+  };
+
   const deleteTask = async (taskId: string) => {
     const previous = tasks;
     setTasks(current => current.filter(t => t.id !== taskId));
@@ -130,7 +138,7 @@ export function TaskProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <TaskContext.Provider value={{ tasks, addTask, deleteTask, updateTaskStatus }}>
+    <TaskContext.Provider value={{ tasks, addTask, deleteTask, updateTaskStatus, updateTask }}>
       {children}
     </TaskContext.Provider>
   );
