@@ -218,7 +218,7 @@ export default function TaskCard({ task, index }: TaskCardProps) {
             {...provided.draggableProps}
             className={`bg-linear-to-br from-white/8 to-white/4 backdrop-blur-sm p-4 rounded-xl shadow-lg border-2 
               ${snapshot.isDragging ? 'border-white/30 shadow-2xl scale-105' : 'border-white/10'} 
-              transition-all duration-200 hover:border-white/20 min-h-40 flex flex-col`}
+              transition-all duration-200 hover:border-white/20 h-48 flex flex-col`}
           >
             {/* Header with status icon and menu */}
             <div className="flex items-start justify-between mb-3">
