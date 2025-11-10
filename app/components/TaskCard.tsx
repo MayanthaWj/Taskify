@@ -217,8 +217,8 @@ export default function TaskCard({ task, index }: TaskCardProps) {
             ref={provided.innerRef}
             {...provided.draggableProps}
             className={`bg-linear-to-br from-white/8 to-white/4 backdrop-blur-sm p-4 rounded-xl shadow-lg border-2 
-              ${snapshot.isDragging ? 'border-white/30 shadow-2xl scale-105' : 'border-white/10'} 
-              transition-all duration-200 hover:border-white/20 h-48 flex flex-col`}
+                      ${snapshot.isDragging ? 'border-white/30 shadow-2xl scale-105' : 'border-white/10'} 
+                      transition-all duration-200 hover:border-white/20 min-h-40 flex flex-col overflow-hidden`}
           >
             {/* Header with status icon and menu */}
             <div className="flex items-start justify-between mb-3">
@@ -278,18 +278,20 @@ export default function TaskCard({ task, index }: TaskCardProps) {
             </div>
 
             {/* Task content */}
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 flex flex-col  min-h-0">
               {/* Drag handle and title */}
               <div className="flex items-center gap-2 mb-2" {...provided.dragHandleProps}>
                 <svg className="w-4 h-4 text-gray-500 cursor-grab active:cursor-grabbing shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
                 </svg>
-                <h3 className="font-semibold text-white text-base leading-snug">{task.title}</h3>
+                <h3 className="font-semibold text-white text-base leading-snug line-clamp-2 wrap-break-word">
+                  {task.title}
+                </h3>
               </div>
 
               {/* Description */}
               {task.description && (
-                <p className="text-sm text-white/60 line-clamp-2 mb-3 leading-relaxed">
+                <p className="text-sm text-white/60 line-clamp-3 mb-3 leading-relaxed wrap-break-word overflow-hidden">
                   {task.description}
                 </p>
               )}
